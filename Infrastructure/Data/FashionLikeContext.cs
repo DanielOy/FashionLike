@@ -16,7 +16,9 @@ namespace Infrastructure.Data
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
-        public DbSet<Profile> Profiles { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Reaction> Reactions { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
     }
 }

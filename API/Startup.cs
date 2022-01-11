@@ -32,7 +32,9 @@ namespace FashionLike
 
             services.AddControllers();
             services.AddDbContext<FashionLikeContext>(x =>
-                x.UseSqlite(_configuration.GetConnectionString("DefaultConnection")));
+                x.UseSqlite(_configuration.GetConnectionString("DefaultConnection"))); 
+            services.AddDbContext<UsersContext>(x =>
+                x.UseSqlite(_configuration.GetConnectionString("UsersConnection")));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FashionLike", Version = "v1" });

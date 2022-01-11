@@ -26,6 +26,9 @@ namespace FashionLike
                 {
                     var context = services.GetRequiredService<FashionLikeContext>();
                     await context.Database.MigrateAsync();
+                    
+                    var userContext = services.GetRequiredService<UsersContext>();
+                    await userContext.Database.MigrateAsync();
                 }
                 catch (Exception ex)
                 {
