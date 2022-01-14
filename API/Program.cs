@@ -1,13 +1,12 @@
+using Core.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FashionLike
@@ -21,14 +20,18 @@ namespace FashionLike
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+                var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
                 try
                 {
                     var context = services.GetRequiredService<FashionLikeContext>();
                     await context.Database.MigrateAsync();
-                    
-                    var userContext = services.GetRequiredService<UsersContext>();
-                    await userContext.Database.MigrateAsync();
+
+                    var userManager = services.GetRequiredService<UserManager<User>>();
+                    var roleManager = services.GetRequiredService<RoleManager<Role>>();
+
+                    await FashionLikeSeed.SeedRoles(roleManager, loggerFactory);
+                    await FashionLikeSeed.SeedUsers(userManager, loggerFactory);
                 }
                 catch (Exception ex)
                 {

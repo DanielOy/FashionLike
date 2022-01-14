@@ -1,18 +1,12 @@
+using API.Extensions;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FashionLike
 {
@@ -31,14 +25,21 @@ namespace FashionLike
         {
 
             services.AddControllers();
+
             services.AddDbContext<FashionLikeContext>(x =>
-                x.UseSqlite(_configuration.GetConnectionString("DefaultConnection"))); 
-            services.AddDbContext<UsersContext>(x =>
-                x.UseSqlite(_configuration.GetConnectionString("UsersConnection")));
+                x.UseSqlite(_configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddApplicationServices();
+            services.AddIdentityServices(_configuration);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FashionLike", Version = "v1" });
             });
+
+            services.AddCors(setup => setup.AddPolicy("CorsPolicy", policy =>
+            {
+                policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4360");
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +56,9 @@ namespace FashionLike
 
             app.UseRouting();
 
+            app.UseCors("CorsPolicy");
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

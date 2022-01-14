@@ -3,35 +3,112 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Infrastructure.Data.UsersMigrations
+namespace Infrastructure.Data.Migrations
 {
-    [DbContext(typeof(UsersContext))]
-    partial class UsersContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(FashionLikeContext))]
+    [Migration("20220114044328_InitialSchema")]
+    partial class InitialSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.13");
 
-            modelBuilder.Entity("Core.Entities.Profile", b =>
+            modelBuilder.Entity("Core.Entities.Post", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("AddPermission")
+                    b.Property<bool>("Active")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("DeletePermission")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("EditPermission")
+                    b.Property<string>("PictureUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId1")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("Core.Entities.Reaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("PostId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ReactionType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId1")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("Reactions");
+                });
+
+            modelBuilder.Entity("Core.Entities.Role", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("Core.Entities.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -39,7 +116,7 @@ namespace Infrastructure.Data.UsersMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Profile");
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Core.Entities.User", b =>
@@ -50,8 +127,14 @@ namespace Infrastructure.Data.UsersMigrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -60,6 +143,12 @@ namespace Infrastructure.Data.UsersMigrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
@@ -84,9 +173,6 @@ namespace Infrastructure.Data.UsersMigrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ProfileId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
 
@@ -106,35 +192,7 @@ namespace Infrastructure.Data.UsersMigrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.HasIndex("ProfileId");
-
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
-
-                    b.ToTable("AspNetRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -239,20 +297,48 @@ namespace Infrastructure.Data.UsersMigrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Core.Entities.User", b =>
+            modelBuilder.Entity("PostTag", b =>
                 {
-                    b.HasOne("Core.Entities.Profile", "Profile")
-                        .WithMany()
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("PostsId")
+                        .HasColumnType("INTEGER");
 
-                    b.Navigation("Profile");
+                    b.Property<int>("TagsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("PostsId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("PostTag");
+                });
+
+            modelBuilder.Entity("Core.Entities.Post", b =>
+                {
+                    b.HasOne("Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Core.Entities.Reaction", b =>
+                {
+                    b.HasOne("Core.Entities.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId");
+
+                    b.HasOne("Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Core.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -279,7 +365,7 @@ namespace Infrastructure.Data.UsersMigrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Core.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -297,6 +383,21 @@ namespace Infrastructure.Data.UsersMigrations
                     b.HasOne("Core.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PostTag", b =>
+                {
+                    b.HasOne("Core.Entities.Post", null)
+                        .WithMany()
+                        .HasForeignKey("PostsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

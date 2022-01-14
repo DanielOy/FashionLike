@@ -1,19 +1,18 @@
 ﻿using Core.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 namespace Infrastructure.Data
 {
-    public class FashionLikeContext : DbContext
+    public class FashionLikeContext : IdentityDbContext<User, Role, string>
     {
-        public FashionLikeContext(DbContextOptions<FashionLikeContext> options) : base(options)
+        public FashionLikeContext(DbContextOptions options) : base(options)
         {
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            base.OnModelCreating(builder);
         }
 
         public DbSet<Post> Posts { get; set; }
