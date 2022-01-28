@@ -1,4 +1,5 @@
 using API.Extensions;
+using API.Helpers;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,16 +20,11 @@ namespace FashionLike
             _configuration = configuration;
         }
 
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
-
-            services.AddDbContext<FashionLikeContext>(x =>
-                x.UseSqlite(_configuration.GetConnectionString("DefaultConnection")));
-
+            services.AddDbContext<FashionLikeContext>(x => x.UseSqlite(_configuration.GetConnectionString("DefaultConnection")));
             services.AddApplicationServices();
             services.AddIdentityServices(_configuration);
             services.AddSwaggerGen(c =>
@@ -38,23 +34,25 @@ namespace FashionLike
 
             services.AddCors(setup => setup.AddPolicy("CorsPolicy", policy =>
             {
-                policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4360");
+                policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
             }));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FashionLike v1"));
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FashionLike v1"));
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseStaticFiles();
 
             app.UseCors("CorsPolicy");
 

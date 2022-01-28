@@ -1,9 +1,10 @@
 ﻿using Core.Entities;
+using System.Threading.Tasks;
 
 namespace Core.Interfaces
 {
     public interface ITokenService
     {
-        string CreateToken(User user);
+        Task<string> CreateToken(User user);
     }
 }

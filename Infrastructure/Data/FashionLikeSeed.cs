@@ -52,6 +52,7 @@ namespace Infrastructure.Data
                     var user = new User
                     {
                         UserName = "Admin",
+                        DisplayName = "Admin",
                         Email = "admin@gmail.com",
                         CreationDate = DateTime.Now,
                         Active = true

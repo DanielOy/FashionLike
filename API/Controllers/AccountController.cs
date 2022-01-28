@@ -31,6 +31,7 @@ namespace API.Controllers
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
                 UserName = registerDto.Email,
+                DisplayName = $"{registerDto.FirstName} {registerDto.LastName}",
                 Email = registerDto.Email,
                 CreationDate = DateTime.Now,
                 Active = true
@@ -52,8 +53,8 @@ namespace API.Controllers
             return new UserDto
             {
                 Email = user.Email,
-                Name = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Name = user.DisplayName,
+                Token = await _tokenService.CreateToken(user)
             };
         }
 
@@ -77,8 +78,8 @@ namespace API.Controllers
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
-                Name = user.UserName
+                Token = await _tokenService.CreateToken(user),
+                Name = user.DisplayName
             };
         }
     }
