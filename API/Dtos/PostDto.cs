@@ -1,4 +1,4 @@
-﻿using Core.Entities;
+﻿using Core.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -14,5 +14,7 @@ namespace API.Dtos
         public DateTime CreationDate { get; set; }
         public bool Active { get; set; }
         public List<string> Tags { get; set; }
+        public int ReactionCount { get; set; }
+        public ReactionType UserReaction { get; set; }
     }
 }

@@ -13,6 +13,7 @@ namespace API.Helpers
                 .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.UserName))
                 .ForMember(d => d.Tags, o => o.MapFrom(s => s.Tags.Select(x => x.Name)))
                 .ForMember(d => d.PictureUrl, o => o.MapFrom<PostUrlResolver>());
+            CreateMap<Tag, TagDto>();
         }
     }
 }

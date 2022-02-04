@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Dtos
 {
@@ -9,5 +10,6 @@ namespace API.Dtos
         [Required]
         public string Description { get; set; }
         public string ImageBase64 { get; set; }
+        public List<string> Tags { get; set; }
     }
 }

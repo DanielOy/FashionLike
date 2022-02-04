@@ -2,9 +2,9 @@
 
 namespace Core.Specifications
 {
-    public class PostSpecification : BaseSpecification<Post>
+    public class PostPaginationSpecification : BaseSpecification<Post>
     {
-        public PostSpecification(PostSpecParams postSpecParams) : base(x =>
+        public PostPaginationSpecification(PostSpecParams postSpecParams) : base(x =>
         (string.IsNullOrEmpty(postSpecParams.Search) || x.Description.ToLower().Contains(postSpecParams.Search)))
         {
             ApplyPagging(postSpecParams.PageSize * (postSpecParams.PageIndex - 1), postSpecParams.PageSize);
@@ -26,6 +26,7 @@ namespace Core.Specifications
             }
 
             AddInclude(x => x.User);
+            AddInclude(x => x.Tags);
         }
     }
 }
