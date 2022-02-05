@@ -7,9 +7,13 @@ namespace API.Dtos
     {
         [Required]
         public string FileName { get; set; }
+        
         [Required]
         public string Description { get; set; }
+        
+        [Required]
         public string ImageBase64 { get; set; }
+        
         public List<string> Tags { get; set; }
     }
 }

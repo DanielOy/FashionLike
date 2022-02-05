@@ -183,6 +183,12 @@ namespace API.Controllers
                 post.PictureName = normalizedName;
             }
 
+            if (postToUpdateDto.Tags?.Count > 0)
+            {
+                var tags = await SaveTags(postToUpdateDto.Tags);
+                post.Tags = tags.ToList();
+            }
+
             _unitOfWork.Posts.Update(post);
             await _unitOfWork.Save();
 
