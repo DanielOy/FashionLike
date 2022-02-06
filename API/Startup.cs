@@ -1,5 +1,6 @@
 using API.Extensions;
 using API.Helpers;
+using API.Middleware;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,23 +41,22 @@ namespace FashionLike
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseMiddleware<ExceptionMiddleware>();
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FashionLike v1"));
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
-
             app.UseStaticFiles();
+            
+            app.UseRouting();
 
             app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

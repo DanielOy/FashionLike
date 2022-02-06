@@ -1,8 +1,10 @@
 ﻿using API.Dtos;
+using API.Helpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,9 +24,11 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Roles = "Administrator,Viewer")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tag>>> Get()
+        [Authorize(Roles = "Administrator,Viewer")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TagDto>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
+        public async Task<ActionResult<IEnumerable<TagDto>>> Get()
         {
             var tags = await _unitOfWork.Tags.GetAllByExpression();
 

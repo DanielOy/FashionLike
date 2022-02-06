@@ -1,9 +1,12 @@
 ﻿using API.Dtos;
+using API.Helpers;
 using Core.Entities;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -24,6 +27,8 @@ namespace API.Controllers
         }
 
         [HttpPost("Register")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             var user = new User
@@ -39,7 +44,7 @@ namespace API.Controllers
 
             if (EmailExists(user.Email).Result.Value)
             {
-                return BadRequest("Email in use");
+                return BadRequest(new ApiErrorResponse(HttpStatusCode.BadRequest, "Email in use"));
             }
 
             var creationResult = await _userManager.CreateAsync(user, registerDto.Password);
@@ -47,7 +52,7 @@ namespace API.Controllers
 
             if (!creationResult.Succeeded)
             {
-                return BadRequest("User can not be created, please retry");
+                return BadRequest(new ApiErrorResponse(HttpStatusCode.BadRequest, "User can not be created, please retry"));
             }
 
             return new UserDto
@@ -59,21 +64,24 @@ namespace API.Controllers
         }
 
         [HttpGet("EmailExists")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         public async Task<ActionResult<bool>> EmailExists([FromQuery] string email)
         {
             return await _userManager.FindByEmailAsync(email) != null;
         }
 
         [HttpPost("Login")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-            if (user == null) return Unauthorized();
+            if (user == null) return Unauthorized(new ApiErrorResponse(HttpStatusCode.Unauthorized));
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if (!result.Succeeded) return Unauthorized();
+            if (!result.Succeeded) return Unauthorized(new ApiErrorResponse(HttpStatusCode.Unauthorized));
 
             return new UserDto
             {

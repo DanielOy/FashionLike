@@ -8,6 +8,7 @@ using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -38,8 +39,10 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Roles = "Administrator,Viewer")]
         [HttpGet]
+        [Authorize(Roles = "Administrator,Viewer")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Pagination<PostDto>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<Pagination<PostDto>>> Get([FromQuery] PostSpecParams postParams)
         {
             var spec = new PostPaginationSpecification(postParams);
@@ -68,8 +71,10 @@ namespace API.Controllers
             });
         }
 
-        [Authorize(Roles = "Administrator,Viewer")]
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrator,Viewer")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PostDto))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<PostDto>> Get(int id)
         {
             var spec = new PostByIdWithDetailsSpecification(id);
@@ -102,8 +107,10 @@ namespace API.Controllers
             return await _unitOfWork.Reactions.CountAsync(countSpec);
         }
 
-        [Authorize(Roles = "Administrator")]
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PostDto))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<PostDto>> Post([FromBody] PostToCreateDto postToCreateDto)
         {
             string userId = await User.GetCurrentUserId(_userManager);
@@ -169,8 +176,10 @@ namespace API.Controllers
             await _unitOfWork.Save();
         }
 
-        [Authorize(Roles = "Administrator")]
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PostDto))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<PostDto>> Put(int id, [FromBody] PostToUpdateDto postToUpdateDto)
         {
             var post = await _unitOfWork.Posts.GetByID(id);
@@ -197,8 +206,10 @@ namespace API.Controllers
             return Ok(updatedPost);
         }
 
-        [Authorize(Roles = "Administrator")]
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<bool>> Delete(int id)
         {
             _unitOfWork.Posts.DeleteByID(id);
@@ -208,8 +219,10 @@ namespace API.Controllers
             return Ok(true);
         }
 
-        [Authorize(Roles = "Viewer")]
         [HttpPost("ReactToPost")]
+        [Authorize(Roles = "Viewer")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReactionDto))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<ReactionDto>> ReactToPost([FromBody] ReactionDto reactionDto)
         {
             var reaction = await GetCurrentUserReactionFromPost(reactionDto.PostId);

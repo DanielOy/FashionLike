@@ -1,7 +1,11 @@
-﻿using Core.Interfaces;
+﻿using API.Helpers;
+using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
+using System.Net;
 
 namespace API.Extensions
 {
@@ -13,6 +17,19 @@ namespace API.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IImagesService, ImagesService>();
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = (ActionContext) =>
+                {
+                    var errors = ActionContext.ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .SelectMany(x => x.Value.Errors)
+                    .Select(x => x.ErrorMessage).ToArray();
+
+                    var errorResponse = new ApiErrorResponse(HttpStatusCode.BadRequest, errors);
+                    return new BadRequestObjectResult(errorResponse);
+                };
+            });
 
             return services;
         }
