@@ -1,11 +1,13 @@
 ﻿using Core.Entities;
+using System.Linq;
 
 namespace Core.Specifications
 {
     public class PostPaginationSpecification : BaseSpecification<Post>
     {
         public PostPaginationSpecification(PostSpecParams postSpecParams) : base(x =>
-        (string.IsNullOrEmpty(postSpecParams.Search) || x.Description.ToLower().Contains(postSpecParams.Search)))
+        (string.IsNullOrEmpty(postSpecParams.Search) || x.Description.ToLower().Contains(postSpecParams.Search))
+        && (string.IsNullOrEmpty(postSpecParams.Tag) || x.Tags.Any(x => x.Name.ToLower().Equals(postSpecParams.Tag))))
         {
             ApplyPagging(postSpecParams.PageSize * (postSpecParams.PageIndex - 1), postSpecParams.PageSize);
 
