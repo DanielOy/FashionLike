@@ -19,6 +19,12 @@ namespace Core.Specifications
                     case "DateDesc":
                         AddOrderByDescending(x => x.CreationDate);
                         break;
+                    case "MostPopular":
+                        AddOrderByDescending(x => x.Reactions.Count);
+                        break;
+                    case "LeastPopular":
+                        AddOrderBy(x => x.Reactions.Count);
+                        break;
                     default:
                         AddOrderBy(x => x.Id);
                         break;
@@ -27,6 +33,7 @@ namespace Core.Specifications
 
             AddInclude(x => x.User);
             AddInclude(x => x.Tags);
+            AddInclude(x => x.Reactions);
         }
     }
 }

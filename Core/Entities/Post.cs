@@ -13,5 +13,6 @@ namespace Core.Entities
         public DateTime CreationDate { get; set; }
         public bool Active { get; set; }
         public List<Tag> Tags { get; set; }
+        public List<Reaction> Reactions { get; set; }
     }
 }
