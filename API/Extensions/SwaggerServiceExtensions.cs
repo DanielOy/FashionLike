@@ -20,8 +20,7 @@ namespace API.Extensions
                 {
                     Title = "FashionLike",
                     Version = "v1",
-                    Description = ".NET Core API",
-                    Contact = new OpenApiContact { Name = "Daniel Oy", Url = new Uri("https://github.com") }
+                    Contact = new OpenApiContact { Name = "Daniel Oy", Url = new Uri("https://github.com/DanielOy") }
                 });
 
                 var securitySchema = new OpenApiSecurityScheme

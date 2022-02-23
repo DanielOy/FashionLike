@@ -4,6 +4,7 @@ using API.Helpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -45,7 +46,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Viewer")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CommentDto))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ConsultCommentDto))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<CommentDto>> Post([FromBody] CommentDto commentDto)
         {
@@ -62,30 +63,36 @@ namespace API.Controllers
             _unitOfWork.Comments.Insert(comment);
             await _unitOfWork.Save();
 
-            return Ok(commentDto);
+            var consultComment = _mapper.Map<Comment, ConsultCommentDto>(comment);
+
+            return Ok(consultComment);
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Viewer")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CommentDto))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ConsultCommentDto))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
-        public async Task<ActionResult<CommentDto>> Put(int id, [FromBody] CommentDto commentDto)
+        public async Task<ActionResult<CommentDto>> Put(Guid id, [FromBody] CommentDto commentDto)
         {
-            var comment = await _unitOfWork.Comments.GetByID(id);
+            var spec = new CommentWithUserSpecification(id);
+
+            var comment = await _unitOfWork.Comments.GetBySpecification(spec);
 
             comment.Text = commentDto.Text;
 
             _unitOfWork.Comments.Update(comment);
             await _unitOfWork.Save();
 
-            return Ok(commentDto);
+            var consultComment = _mapper.Map<Comment, ConsultCommentDto>(comment);
+
+            return Ok(consultComment);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Viewer")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
-        public async Task<ActionResult<bool>> Delete(string id)
+        public async Task<ActionResult<bool>> Delete(Guid id)
         {
             _unitOfWork.Comments.DeleteByID(id);
             await _unitOfWork.Save();
