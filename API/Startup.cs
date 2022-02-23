@@ -28,10 +28,7 @@ namespace FashionLike
             services.AddDbContext<FashionLikeContext>(x => x.UseSqlite(_configuration.GetConnectionString("DefaultConnection")));
             services.AddApplicationServices();
             services.AddIdentityServices(_configuration);
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FashionLike", Version = "v1" });
-            });
+            services.AddSwaggerDocumentation();
 
             services.AddCors(setup => setup.AddPolicy("CorsPolicy", policy =>
             {
@@ -44,8 +41,7 @@ namespace FashionLike
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FashionLike v1"));
+            app.UseSwaggerDocumentation();
 
             app.UseHttpsRedirection();
 
