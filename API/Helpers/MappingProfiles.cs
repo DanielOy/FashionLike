@@ -10,10 +10,12 @@ namespace API.Helpers
         public MappingProfiles()
         {
             CreateMap<Post, PostDto>()
-                .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.UserName))
-                .ForMember(d => d.Tags, o => o.MapFrom(s => s.Tags.Select(x => x.Name)))
-                .ForMember(d => d.PictureUrl, o => o.MapFrom<PostUrlResolver>());
+                .ForMember(destiny => destiny.UserName, origin => origin.MapFrom(s => s.User.UserName))
+                .ForMember(destiny => destiny.Tags, origin => origin.MapFrom(s => s.Tags.Select(x => x.Name)))
+                .ForMember(destiny => destiny.PictureUrl, origin => origin.MapFrom<PostUrlResolver>());
             CreateMap<Tag, TagDto>();
+            CreateMap<Comment, ConsultCommentDto>()
+                .ForMember(destiny => destiny.User, origin => origin.MapFrom(source => source.User.DisplayName));
         }
     }
 }

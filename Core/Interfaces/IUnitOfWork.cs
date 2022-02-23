@@ -14,6 +14,7 @@ namespace Core.Interfaces
         IGenericRepository<Tag> Tags { get; }
         IGenericRepository<Role> Roles { get; }
         IGenericRepository<User> Users { get; }
+        IGenericRepository<Comment> Comments { get; }
 
         Task Save();
     }

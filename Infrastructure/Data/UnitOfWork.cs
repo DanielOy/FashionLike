@@ -15,6 +15,7 @@ namespace Infrastructure.Data
         public IGenericRepository<Reaction> Reactions { get; }
         public IGenericRepository<Role> Roles { get; }
         public IGenericRepository<User> Users { get; }
+        public IGenericRepository<Comment> Comments { get; }
 
         public UnitOfWork(FashionLikeContext context)
         {
@@ -25,6 +26,7 @@ namespace Infrastructure.Data
             Reactions = new GenericRepository<Reaction>(_context);
             Roles = new GenericRepository<Role>(_context);
             Users = new GenericRepository<User>(_context);
+            Comments = new GenericRepository<Comment>(_context);
         }
 
         public async Task Save()
