@@ -32,7 +32,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{PostId}")]
-        [Authorize(Roles = "Viewer")]
+        [Authorize(Roles = "Administrator,Viewer")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ConsultCommentDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<IEnumerable<ConsultCommentDto>>> Get(int PostId)
@@ -45,7 +45,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Viewer")]
+        [Authorize(Roles = "Administrator,Viewer")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ConsultCommentDto))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<CommentDto>> Post([FromBody] CommentDto commentDto)
@@ -69,7 +69,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Viewer")]
+        [Authorize(Roles = "Administrator,Viewer")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ConsultCommentDto))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<CommentDto>> Put(Guid id, [FromBody] CommentDto commentDto)
@@ -89,7 +89,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Viewer")]
+        [Authorize(Roles = "Administrator,Viewer")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiErrorResponse))]
         public async Task<ActionResult<bool>> Delete(Guid id)
