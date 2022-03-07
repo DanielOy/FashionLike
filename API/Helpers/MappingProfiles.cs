@@ -15,10 +15,11 @@ namespace API.Helpers
                 .ForMember(destiny => destiny.PictureUrl, origin => origin.MapFrom<PostUrlResolver>())
                 .ForMember(destiny => destiny.LikeCount, origin => origin.MapFrom(s => s.Reactions.Count(x => x.ReactionType == Core.Enums.ReactionType.Like)))
                 .ForMember(destiny => destiny.DislikeCount, origin => origin.MapFrom(s => s.Reactions.Count(x => x.ReactionType == Core.Enums.ReactionType.Dislike)))
-                .ForMember(destiny=>destiny.UserReaction, origin=>origin.MapFrom<PostUserResolver>());
+                .ForMember(destiny => destiny.UserReaction, origin => origin.MapFrom<PostUserResolver>());
             CreateMap<Tag, TagDto>();
             CreateMap<Comment, ConsultCommentDto>()
-                .ForMember(destiny => destiny.User, origin => origin.MapFrom(source => source.User.DisplayName));
+                .ForMember(destiny => destiny.User, origin => origin.MapFrom(source => source.User.DisplayName))
+                .ForMember(destiny => destiny.IsOwn, origin => origin.MapFrom<CommentUserResolver>());
         }
     }
 }
