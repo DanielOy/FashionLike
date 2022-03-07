@@ -54,21 +54,10 @@ namespace API.Controllers
             var posts = await _unitOfWork.Posts.GetAllBySpecification(spec);
 
             var data = _mapper.Map<IEnumerable<Post>, IEnumerable<PostDto>>(posts);
-            data = AttachReactionCountAndUserReactionInfo(data);
 
             var page = new Pagination<PostDto>(postParams.PageIndex, postParams.PageSize, total, data);
 
             return Ok(page);
-        }
-
-        private IEnumerable<PostDto> AttachReactionCountAndUserReactionInfo(IEnumerable<PostDto> data)
-        {
-            return data.Select(x =>
-            {
-                x.UserReaction = GetCurrentUserReactionFromPost(x.Id).Result?.ReactionType ?? ReactionType.None;
-                x.ReactionCount = GetPostReactionsCount(x.Id).Result;
-                return x;
-            });
         }
 
         [HttpGet("{id}")]
@@ -83,11 +72,6 @@ namespace API.Controllers
 
             var postDto = _mapper.Map<Post, PostDto>(post);
 
-            postDto.ReactionCount = await GetPostReactionsCount(id);
-
-            var userReaction = await GetCurrentUserReactionFromPost(id);
-            postDto.UserReaction = userReaction?.ReactionType ?? ReactionType.None;
-
             return Ok(postDto);
         }
 
@@ -99,12 +83,6 @@ namespace API.Controllers
             var userReaction = await _unitOfWork.Reactions.GetBySpecification(userReactionSpec);
 
             return userReaction;
-        }
-
-        private async Task<int> GetPostReactionsCount(int id)
-        {
-            var countSpec = new PostReactionCountSpecification(id);
-            return await _unitOfWork.Reactions.CountAsync(countSpec);
         }
 
         [HttpPost]

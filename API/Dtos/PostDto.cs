@@ -14,7 +14,8 @@ namespace API.Dtos
         public DateTime CreationDate { get; set; }
         public bool Active { get; set; }
         public List<string> Tags { get; set; }
-        public int ReactionCount { get; set; }
+        public int DislikeCount { get; set; }
+        public int LikeCount { get; set; }
         public ReactionType UserReaction { get; set; }
     }
 }
