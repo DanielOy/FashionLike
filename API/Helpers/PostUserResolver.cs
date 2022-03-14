@@ -26,7 +26,7 @@ namespace API.Helpers
         {
             string userId = _httpContextAccessor.HttpContext.User.GetCurrentUserId(_userManager).Result;
 
-            return source.Reactions.FirstOrDefault(x => x.UserId == userId)?.ReactionType ?? ReactionType.None;
+            return source?.Reactions?.FirstOrDefault(x => x.UserId == userId)?.ReactionType ?? ReactionType.None;
         }
     }
 }
