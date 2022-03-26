@@ -212,7 +212,8 @@ namespace API.Controllers
                 {
                     PostId = reactionDto.PostId,
                     UserId = userId,
-                    ReactionType = (ReactionType)reactionDto.ReactionType
+                    ReactionType = (ReactionType)reactionDto.ReactionType,
+                    CreationDate=DateTime.Now
                 };
 
                 _unitOfWork.Reactions.Insert(reaction);
@@ -220,6 +221,7 @@ namespace API.Controllers
             else
             {
                 reaction.ReactionType = (ReactionType)reactionDto.ReactionType;
+                reaction.CreationDate = DateTime.Now;
                 _unitOfWork.Reactions.Update(reaction);
             }
 

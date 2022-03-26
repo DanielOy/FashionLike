@@ -1,4 +1,5 @@
 ﻿using Core.Enums;
+using System;
 
 namespace Core.Entities
 {
@@ -9,6 +10,7 @@ namespace Core.Entities
         public Post Post { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
+        public DateTime CreationDate { get; set; }
         public ReactionType ReactionType { get; set; }
     }
 }
