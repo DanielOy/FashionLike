@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 
 namespace FashionLike
 {
@@ -25,7 +24,7 @@ namespace FashionLike
         {
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
-            services.AddDbContext<FashionLikeContext>(x => x.UseSqlite(_configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<FashionLikeContext>(x => x.UseNpgsql(_configuration.GetConnectionString("DefaultConnection")));
             services.AddApplicationServices();
             services.AddIdentityServices(_configuration);
             services.AddSwaggerDocumentation();
@@ -41,18 +40,19 @@ namespace FashionLike
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
-            app.UseSwaggerDocumentation();
+            if (env.IsDevelopment())
+                app.UseSwaggerDocumentation();
 
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
-            
+
             app.UseRouting();
 
             app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
-            
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
