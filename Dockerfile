@@ -8,4 +8,5 @@ EXPOSE 80
 
 ENTRYPOINT ["dotnet", "API.dll"]
 
-#dotnet publish -c Debug -o out
+#dotnet publish -c Release -o out
+#docker build -t danny247/fashion-like-backend .
