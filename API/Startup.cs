@@ -43,8 +43,6 @@ namespace FashionLike
             if (env.IsDevelopment())
                 app.UseSwaggerDocumentation();
 
-            app.UseHttpsRedirection();
-
             app.UseStaticFiles();
 
             app.UseRouting();
