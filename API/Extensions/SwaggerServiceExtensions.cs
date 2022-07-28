@@ -20,7 +20,7 @@ namespace API.Extensions
                 {
                     Title = "FashionLike",
                     Version = "v1",
-                    Contact = new OpenApiContact { Name = "Daniel Oy", Url = new Uri("https://github.com/DanielOy") }
+                    Contact = new OpenApiContact { Name = "Daniel Oy", Url = new Uri("https://danieloy.github.io/") }
                 });
 
                 var securitySchema = new OpenApiSecurityScheme
